@@ -32,6 +32,19 @@ def merge_dataframes(path, merge_on="Team"):
     )
 
 
+def get_coordinate_data(dataframe, coordinate, team, week):
+    """Returns the coordinate data for the team in the dataframe."""
+
+    if coordinate == "goals_for":
+        coordinate = "Avg Goals For Week {week}"
+    elif coordinate == "goals_against":
+        coordinate = "Avg Goals Against Week {week}"
+
+    return dataframe.loc[
+        dataframe["Team"] == team, coordinate.format(week=week)
+    ].values[0]
+
+
 weeks = get_weeks()
 
 df_final = merge_dataframes("/Users/loganfries/iCloud/Hockey/Data/GF_v_GA/")
