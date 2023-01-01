@@ -35,3 +35,12 @@ def merge_dataframes(path, merge_on="Team"):
 weeks = get_weeks()
 
 df_final = merge_dataframes("/Users/loganfries/iCloud/Hockey/Data/GF_v_GA/")
+
+# Initialize a dictionary to store the x (average goals against) and y (average goals for) coordinate steps for each team.
+coordinate_steps = {}
+
+for team in df_final["Team"]:
+    coordinate_steps[team] = {
+        "Average Goals For Steps": [],
+        "Average Goals Against Steps": [],
+    }
