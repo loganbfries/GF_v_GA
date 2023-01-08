@@ -45,6 +45,9 @@ def get_coordinate_data(dataframe, coordinate, team, week):
     ].values[0]
 
 
+# Set the number of steps for the point to move through for each week.
+step_size = 10
+
 weeks = get_weeks()
 
 df_final = merge_dataframes("/Users/loganfries/iCloud/Hockey/Data/GF_v_GA/")
@@ -57,3 +60,34 @@ for team in df_final["Team"]:
         "Average Goals For Steps": [],
         "Average Goals Against Steps": [],
     }
+
+for team in df_final["Team"]:
+
+    ga_coordinate_steps = []
+    gf_coordinate_steps = []
+
+    for week in sorted(weeks):
+        # Skip the first week since we are starting from that point.
+        if week == weeks[0]:
+            continue
+
+        current_week_index = weeks.index(week)
+        prev_week = weeks[current_week_index - 1]
+
+        avg_gf_prev_week = get_coordinate_data(df_final, "goals_for", team, prev_week)
+
+        avg_ga_prev_week = get_coordinate_data(
+            df_final, "goals_against", team, prev_week
+        )
+
+        avg_gf_current_week = get_coordinate_data(df_final, "goals_for", team, week)
+
+        avg_ga_current_week = get_coordinate_data(df_final, "goals_against", team, week)
+
+        ga_weekly_coordinate_steps = np.linspace(
+            avg_ga_prev_week, avg_ga_current_week, step_size
+        )
+
+        gf_weekly_coordinate_steps = np.linspace(
+            avg_gf_prev_week, avg_gf_current_week, step_size
+        )
