@@ -49,6 +49,7 @@ def get_coordinate_data(dataframe, coordinate, team, week):
 step_size = 10
 
 weeks = get_weeks()
+weeks = sorted(weeks)
 
 df_final = merge_dataframes("/Users/loganfries/iCloud/Hockey/Data/GF_v_GA/")
 
@@ -57,8 +58,8 @@ coordinate_steps = {}
 
 for team in df_final["Team"]:
     coordinate_steps[team] = {
-        "Average Goals For Steps": [],
-        "Average Goals Against Steps": [],
+        "Average Goals For Steps": {},
+        "Average Goals Against Steps": {},
     }
 
 for team in df_final["Team"]:
@@ -66,9 +67,21 @@ for team in df_final["Team"]:
     ga_coordinate_steps = []
     gf_coordinate_steps = []
 
-    for week in sorted(weeks):
+    for week in weeks:
         # Skip the first week since we are starting from that point.
         if week == weeks[0]:
+
+            coordinate_steps[team]["Average Goals Against Steps"][
+                "Week {week} Still".format(week=week)
+            ] = np.ones(step_size) * get_coordinate_data(
+                df_final, "goals_against", team, week
+            )
+
+            coordinate_steps[team]["Average Goals For Steps"][
+                "Week {week} Still".format(week=week)
+            ] = np.ones(step_size) * get_coordinate_data(
+                df_final, "goals_for", team, week
+            )
             continue
 
         current_week_index = weeks.index(week)
@@ -91,3 +104,29 @@ for team in df_final["Team"]:
         gf_weekly_coordinate_steps = np.linspace(
             avg_gf_prev_week, avg_gf_current_week, step_size
         )
+
+        # This is creating an array of size (step_size) that contains the last value of the array of coordinate steps, so it pauses on the last coordinate step for each week.
+        ga_stand_still_frames = np.ones(step_size) * ga_weekly_coordinate_steps[-1]
+        gf_stand_still_frames = np.ones(step_size) * gf_weekly_coordinate_steps[-1]
+
+        coordinate_steps[team]["Average Goals Against Steps"][
+            "Week {week} Still".format(week=week)
+        ] = ga_stand_still_frames
+        coordinate_steps[team]["Average Goals For Steps"][
+            "Week {week} Still".format(week=week)
+        ] = gf_stand_still_frames
+        coordinate_steps[team]["Average Goals Against Steps"][
+            "Week {previous_week} to Week {week}".format(
+                previous_week=prev_week, week=week
+            )
+        ] = ga_weekly_coordinate_steps
+        coordinate_steps[team]["Average Goals For Steps"][
+            "Week {previous_week} to Week {week}".format(
+                previous_week=prev_week, week=week
+            )
+        ] = gf_weekly_coordinate_steps
+
+    print(coordinate_steps[team]["Average Goals Against Steps"].keys())
+    print(coordinate_steps[team]["Average Goals For Steps"].keys())
+
+    exit()
