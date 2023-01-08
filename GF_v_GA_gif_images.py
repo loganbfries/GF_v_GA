@@ -61,7 +61,7 @@ def get_coordinate_data(dataframe, coordinate, team, week):
 
 
 # Set the number of steps for the point to move through for each week.
-step_size = 10
+step_size = 20
 
 weeks = get_weeks()
 weeks = sorted(weeks)
