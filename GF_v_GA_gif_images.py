@@ -265,6 +265,10 @@ for coordinate_step_name in coordinate_step_name_list:
             "Through Week: {nhl_week}".format(nhl_week=week),
             size=12,
         )
+
+        ax.set_ylabel("Avg Goals Against", size=12)
+        ax.set_xlabel("Avg Goals For", size=12)
+
         ax.invert_yaxis()
 
         ax.set_xbound(lower=x_axis_bounds[0] - 0.25, upper=x_axis_bounds[1] + 0.25)
